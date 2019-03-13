@@ -6,10 +6,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ProgressBar;
 
 import com.example.newsapp.ApiCallback;
 import com.example.newsapp.R;
@@ -59,6 +62,9 @@ public class BussinessFragment extends Fragment implements BusinessRecyclerViewA
     @BindView(R.id.refreshLayout)
     SwipeRefreshLayout refreshLayout;
 
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
     private int totalItemCount;
     AtomicBoolean aBoolean = new AtomicBoolean(true);
 
@@ -107,6 +113,7 @@ public class BussinessFragment extends Fragment implements BusinessRecyclerViewA
             @Override
             public void onChanged(List<BusinessArticleEntity> articleEntities) {
                 if(articleEntities.size()>0){
+                    progressBar.setVisibility(View.GONE);
                     adapter.setArticleList(articleEntities);
                     articleEntityListMain.clear();
                 }
@@ -125,6 +132,7 @@ public class BussinessFragment extends Fragment implements BusinessRecyclerViewA
     public void onResume() {
         super.onResume();
         if(loadMoreData && !tabOpened){
+            Log.d("sdfsdsdfs", "onResume: "+PAGE_INDEX);
             loadData();
         }
         else if(tabOpened){
@@ -133,6 +141,9 @@ public class BussinessFragment extends Fragment implements BusinessRecyclerViewA
     }
 
     private void loadData() {
+        if(PAGE_INDEX==1){
+            progressBar.setVisibility(View.VISIBLE);
+        }
         fetchData(new ApiCallback() {
             @Override
             public void onSuccess(HeadlineResponse headlineResponse) {
@@ -145,8 +156,9 @@ public class BussinessFragment extends Fragment implements BusinessRecyclerViewA
                             articles.getUrlToImage(),
                             articles.getPublishedAt(),
                             articles.getContent(),
-                            articles.getSource().get("name"),""));
+                            articles.getSource().get("name"),"business"));
                 }
+                progressBar.setVisibility(View.GONE);
                 adapter.appendArticleList(list);
                 articleEntityListMain.addAll(list);
                 TOTAL_ARTICLES = headlineResponse.getTotalResults();

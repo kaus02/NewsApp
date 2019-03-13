@@ -5,10 +5,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ProgressBar;
 
 import com.example.newsapp.ApiCallback;
 import com.example.newsapp.R;
@@ -59,6 +62,9 @@ public class EntertainmentFragment extends Fragment implements EntertainmentRecy
     @BindView(R.id.refreshLayout)
     SwipeRefreshLayout refreshLayout;
 
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
     private int totalItemCount;
     AtomicBoolean aBoolean = new AtomicBoolean(true);
 
@@ -107,6 +113,7 @@ public class EntertainmentFragment extends Fragment implements EntertainmentRecy
             @Override
             public void onChanged(List<EntertainmentArticleEntity> articleEntities) {
                 if(articleEntities.size()>0){
+                    progressBar.setVisibility(View.GONE);
                     adapter.setArticleList(articleEntities);
                     articleEntityListMain.clear();
                 }
@@ -125,6 +132,7 @@ public class EntertainmentFragment extends Fragment implements EntertainmentRecy
     public void onResume() {
         super.onResume();
         if(loadMoreData && !tabOpened){
+            Log.d("sdfsdsdfs", "onResume: "+PAGE_INDEX);
             loadData();
         }
         else if(tabOpened){
@@ -145,8 +153,9 @@ public class EntertainmentFragment extends Fragment implements EntertainmentRecy
                             articles.getUrlToImage(),
                             articles.getPublishedAt(),
                             articles.getContent(),
-                            articles.getSource().get("name"),""));
+                            articles.getSource().get("name"),"entertainment"));
                 }
+                progressBar.setVisibility(View.GONE);
                 adapter.appendArticleList(list);
                 articleEntityListMain.addAll(list);
                 TOTAL_ARTICLES = headlineResponse.getTotalResults();
@@ -173,7 +182,7 @@ public class EntertainmentFragment extends Fragment implements EntertainmentRecy
         Map<String, String> mp = new HashMap<>();
         mp.put("country", "us");
         mp.put("page", String.valueOf(PAGE_INDEX));
-        mp.put("category","business");
+        mp.put("category","entertainment");
         mp.put("pageSize", String.valueOf(PAGE_SIZE));
         Call<HeadlineResponse> response = TopHeadlinesService.getInstance(getActivity()).getTopHeadlines(mp);
         response.enqueue(new Callback<HeadlineResponse>() {

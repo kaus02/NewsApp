@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ProgressBar;
 
 import com.example.newsapp.ApiCallback;
 import com.example.newsapp.R;
@@ -60,6 +61,9 @@ public class HealthFragment extends Fragment implements HealthRecyclerViewAdapte
     @BindView(R.id.refreshLayout)
     SwipeRefreshLayout refreshLayout;
 
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
     private int totalItemCount;
     AtomicBoolean aBoolean = new AtomicBoolean(true);
 
@@ -108,6 +112,7 @@ public class HealthFragment extends Fragment implements HealthRecyclerViewAdapte
             @Override
             public void onChanged(List<HealthArticleEntity> articleEntities) {
                 if(articleEntities.size()>0){
+                    progressBar.setVisibility(View.GONE);
                     adapter.setArticleList(articleEntities);
                     articleEntityListMain.clear();
                 }
@@ -134,6 +139,9 @@ public class HealthFragment extends Fragment implements HealthRecyclerViewAdapte
     }
 
     private void loadData() {
+        if(PAGE_INDEX==1){
+            progressBar.setVisibility(View.VISIBLE);
+        }
         fetchData(new ApiCallback() {
             @Override
             public void onSuccess(HeadlineResponse headlineResponse) {
@@ -146,8 +154,9 @@ public class HealthFragment extends Fragment implements HealthRecyclerViewAdapte
                             articles.getUrlToImage(),
                             articles.getPublishedAt(),
                             articles.getContent(),
-                            articles.getSource().get("name"),""));
+                            articles.getSource().get("name"),"health"));
                 }
+                progressBar.setVisibility(View.GONE);
                 adapter.appendArticleList(list);
                 articleEntityListMain.addAll(list);
                 TOTAL_ARTICLES = headlineResponse.getTotalResults();
@@ -174,7 +183,7 @@ public class HealthFragment extends Fragment implements HealthRecyclerViewAdapte
         Map<String, String> mp = new HashMap<>();
         mp.put("country", "us");
         mp.put("page", String.valueOf(PAGE_INDEX));
-        mp.put("category","business");
+        mp.put("category","health");
         mp.put("pageSize", String.valueOf(PAGE_SIZE));
         Call<HeadlineResponse> response = TopHeadlinesService.getInstance(getActivity()).getTopHeadlines(mp);
         response.enqueue(new Callback<HeadlineResponse>() {

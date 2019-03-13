@@ -1,6 +1,8 @@
 package com.example.newsapp.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,13 +10,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.newsapp.R;
 import com.example.newsapp.datastore.home.ArticleEntity;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,6 +63,17 @@ public class ArticlePagedListAdapter extends PagedListAdapter<ArticleEntity, Art
         holder.articleTitle.setText(article.getTitle());
         holder.articleDescription.setText(article.getDescription());
     }
+
+//    public void write(String fileName, Bitmap bitmap) {
+//        FileOutputStream outputStream;
+//        try {
+//            outputStream = mContext.openFileOutput(fileName, Context.MODE_PRIVATE);
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+//            outputStream.close();
+//        } catch (Exception error) {
+//            error.printStackTrace();
+//        }
+//    }
 
     @Override
     public int getItemCount() {

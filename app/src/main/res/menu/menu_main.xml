@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.newsapp.activities.MainActivity">
     <item
+        android:iconTint="@android:color/black"
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"

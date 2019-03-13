@@ -1,6 +1,7 @@
 package com.example.newsapp.datastore.home;
 
 
+import android.app.Application;
 import android.content.Context;
 
 import androidx.room.Database;
@@ -14,9 +15,9 @@ public abstract class ArticleDatabase extends RoomDatabase {
 
     private static ArticleDatabase mInstance;
 
-    public static ArticleDatabase getInstance(Context ctx){
+    public static ArticleDatabase getInstance(Application ctx){
         if(mInstance==null){
-            mInstance = Room.databaseBuilder(ctx.getApplicationContext(),
+            mInstance = Room.databaseBuilder(ctx,
                     ArticleDatabase.class,"article_info")
                     .fallbackToDestructiveMigration()
                     .build();
